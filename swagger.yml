@@ -1,0 +1,291 @@
+swagger: '2.0'
+info:
+  title: gopher-holes-unlimited-api
+  version: 1.0.0
+basePath: /
+schemes:
+  - https
+paths:
+  /companies:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: boolean (0 or 1) to return only active or inactive records
+          #explode: true
+          in: query
+          name: active
+          required: false
+          #style: form
+          type: boolean
+      security:
+        - MyUserPool: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        credentials: ${self:custom.iam.apig.arn}
+        httpMethod: POST
+        uri: arn:aws:apigateway:${self:provider.region}:lambda:path/2015-03-31/functions/${self:custom.lambda.companies.arn}/invocations
+        requestTemplates:
+          application/json: |
+            {
+              "body": $input.json('$')
+            }
+        responses:
+          "default":
+            statusCode: '200'
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Auth-Token'"
+              method.response.header.Access-Control-Allow-Methods : "'POST,OPTIONS,GET,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+          "BAD.*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+          "INT.*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+      responses:
+        '200':
+          description: success
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            allOf:
+              - $ref: '#/definitions/Status200'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/CompanyWithLocation'
+                    type: array
+                type: object
+        '401':
+          description: invalid token
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status401'
+        '403':
+          description: not authorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status403'
+        '500':
+          description: server error
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status500'
+      tags:
+        - companies
+      description: tenantId is stored in JWT
+      summary: get array of all tenant's companies
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Company'
+      security:
+        - MyUserPool: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        credentials: ${self:custom.iam.apig.arn}
+        httpMethod: POST
+        uri: arn:aws:apigateway:${self:provider.region}:lambda:path/2015-03-31/functions/${self:custom.lambda.companies.arn}/invocations
+        requestTemplates:
+          application/json: |
+            {
+              "body": $input.json('$')
+            }
+        responses:
+          "default":
+            statusCode: '200'
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token, X-Auth-Token'"
+              method.response.header.Access-Control-Allow-Methods : "'POST,OPTIONS,GET,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+          "BAD.*":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+          "INT.*":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+      responses:
+        '200':
+          description: success
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            allOf:
+              - $ref: '#/definitions/Status200'
+              - properties:
+                  data:
+                    $ref: '#/definitions/CompanyWithLocation'
+        '401':
+          description: invalid token
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status401'
+        '403':
+          description: not authorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status403'
+        '500':
+          description: server error
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+          schema:
+            $ref: '#/definitions/Status500'
+      tags:
+        - companies
+      summary: create company
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - CORS
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token, X-Auth-Token'"
+              method.response.header.Access-Control-Allow-Methods : "'POST,OPTIONS,GET,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+  
+definitions:
+  Company:
+    properties:
+      tenantId:
+        format: int32
+        # readOnly: true
+        type: integer
+      companyId:
+        format: int32
+        # readOnly: true
+        type: integer
+      locationId:
+        format: int32
+        type: integer
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      active:
+        type: boolean
+        default: 1
+    type: object
+      
+x-components:
+  responses:
+    ForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status403'
+      description: not authorized
+    InvalidIdError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status400'
+      description: invalid id
+    NotFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status404'
+      description: not found
+    ServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status500'
+      description: server error
+    Success:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status200'
+      description: success
+    UnauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Status401'
+      description: invalid token
+# Added by API Auto Mocking Plugin
+
+securityDefinitions:
+  MyUserPool: 
+    type: apiKey
+    name: X-Auth-Token
+    in: header
+    x-amazon-apigateway-authtype: cognito_user_pools
+    x-amazon-apigateway-authorizer: 
+      type: cognito_user_pools
+      # identityValidationExpression: "^x-[a-z]+"
+      providerARNs: 
+        - "arn:aws:cognito-idp:us-west-2:#{AWS::AccountId}:userpool/${self:custom.cognito.userPoolId}"
+
+x-amazon-apigateway-request-validators:
+  # validateRequestBody: true
+  # validateRequestParameters: true
+  basic:
+    validateRequestBody: true
+    validateRequestParameters: true
+  # params-only:
+  #   validateRequestBody: false
+  #   validateRequestParameters: true
