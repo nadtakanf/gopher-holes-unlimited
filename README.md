@@ -106,55 +106,33 @@ Create gopher
                 gopherStatus: At Large
                 user: tigerwoods
                 createAt: 1626275538869
-      responses:
-        '200':
-          description: OK
+    responses:
+    '200':
+        description: OK
 ```
 
 Update gopher
 ```paths:
   /gopher/update/{id}:
-    post:
-      summary: Update a gopher
-      requestBody:
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                pk:
-                    type: string
-                sk:
-                    type: string
-                id:
-                    type: string
-                email:
-                    type: string
-                name:
-                    type: string
-                gopherStatus:
-                    type: string
-                user:
-                    type: string
-                createAt:
-                    type: string
-              example:   # Sample object
-                pk: USER#tigerwoods  
-                sk: USER#tigerwoods
-                email: tigerwoods@gmail.com
-                name: Tiger Woods
-                gopherStatus: At Large
-                user: tigerwoods
-                createAt: 1626275538869
-      responses:
-        '200':
-          description: OK
+    put:
+        summary: Update a gopher
+        parameters:
+            - in: path
+                name: id   # Note the name is the same as in the path
+                required: true
+                schema:
+                type: string
+                minimum: 1
+                description: gopher id
+    responses:
+    '200':
+        description: OK
 ```
 
 Delete gopher
 ```paths:
   /gopher/delete/{id}:
-    post:
+    delete:
       summary: Delete a gopher
       requestBody:
         content:
@@ -166,38 +144,48 @@ Delete gopher
                     type: string
               example:   # Sample object
                 id: ulid
-      responses:
-        '200':
-          description: OK
+    responses:
+    '200':
+        description: OK
 ```
 
 Search gophers by type, name, status, or location
 ```paths:
-  /gopher/search?gopherType=Professional:
-    post:
+  /gopher/search?gopherType=Professional&name=Tiger&gopherStatus=At Large&location=USA:
+    get:
       summary: Search gophers by type, name, status, or location
-      requestBody:
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                gopherType:
-                    type: string
-                name:
-                    type: string
-                gopherStatus:
-                    type: string
-                location:
-                    type: string
-              example:   # Sample object
-                gopherType: Professional
-                name: Tiger Woods
-                gopherStatus: Captive
-                location: USA
-      responses:
-        '200':
-          description: OK
+      parameters:
+        - in: path
+          name: name  
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher name
+        - in: path
+          name: gopherType  
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher type
+        - in: path
+          name: gopherStatus  
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher status
+        - in: path
+          name: location  
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher location
+    responses:
+    '200':
+        description: OK
 ```
 
 ----
@@ -232,16 +220,24 @@ Create a gopher hole
                 id: ulid
                 hole: 6
                 createAt: 1626275538869
-      responses:
-        '200':
-          description: OK
+    responses:
+    '200':
+        description: OK
 ```
 
 Update gopher
 ```paths:
   /gopher/update/{id}:
-    post:
+    put:
       summary: Update a gopher
+      parameters:
+        - in: path
+          name: id   # Note the name is the same as in the path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher id
       requestBody:
         content:
           application/json:
@@ -252,8 +248,6 @@ Update gopher
                     type: string
                 sk:
                     type: string
-                id:
-                    type: string
                 hole:
                     type: number
                 createAt:
@@ -261,30 +255,27 @@ Update gopher
               example:   # Sample object
                 pk: USER#tigerwoods  
                 sk: Hole#ulid
-                id: ulid
                 hole: 6
                 createAt: 1626275538869
-      responses:
-        '200':
-          description: OK
+    responses:
+    '200':
+        description: OK
 ```
 
 Delete gopher hole
 ```paths:
   /gopher-hole/delete/{id}:
-    post:
+    delete:
       summary: Delete a gopher
-      requestBody:
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                id:
-                    type: string
-              example:   # Sample object
-                id: ulid
-      responses:
-        '200':
-          description: OK
+      parameters:
+        - in: path
+          name: id   # Note the name is the same as in the path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher ulid
+    responses:
+    '200':
+        description: OK
 ```
