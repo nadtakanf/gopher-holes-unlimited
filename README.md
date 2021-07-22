@@ -13,7 +13,11 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#architecture-Gopher-backend-api-diagram">Architecture Gopher Backend API diagramh</a></li>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#business-requirements">Business Requirements</a></li>
+        <li><a href="#database-schema">Database Schema</a></li>
+        <li><a href="#open-api-spec">Open API Spec</a></li>
       </ul>
     </li>
   </ol>
@@ -27,6 +31,17 @@ associated holes in the United States.
 
 #### Architecture Gopher Backend API diagram
 <img src="/images/gopher-holes-unlimited-arch-diagram.png"/>
+
+### Business Requirements
+* A user can add/update/delete gophers from the system
+* A user can add/update/delete gopher holes from the system
+* A user can associate an existing gopher hole to a gopher
+* A user can change the status of a gopher
+    * Statuses: At Large, Captive, Terminated
+    * When the gopher status changes, an email is automatically sent to all “watchers”
+* A user can search for gophers by type, name, status, or location
+* The system must publish a webhook event when a gopher hole is created or deleted
+* If a user delete a gopher, all associated gopher holes must also be deleted automatically
 
 ### Built With
 This project is built with technologiest as below.
@@ -43,3 +58,233 @@ This project is built with technologiest as below.
 * [AWS SQS](https://aws.amazon.com/sqs/)
 * [Github Action](https://github.com/features/actions)
 * [Lambda log](https://lambdalog.js.org/)
+
+### Database Schema
+| PK               | SK                | id    | email                | name        | gopherStatus | user         | holes | location | gopher type | createdAt
+| ---------------- | ----------------- | ----- | -------------------- | ----------- | ------------ | ------------ | ----- | Professional | USA | ---------
+| USER#tigerwoods  | USER#tigerwoods   |       | tigerwoods@gmail.com | Tiger Woods | At Large     | tigerwoods   |       | 1626275538869
+| USER#tigerwoods  | Hole#ulid         | ulid  |                      |             |              |              |   6   | 1626275538869
+| USER#wacher1     | Wacher#tiberwoods |       | wacher1 @gmail.com   | wacher 1    |              | wacher1      |       | 1626275538869 
+
+### Open API Spec
+
+Gopher
+----
+
+Create gopher
+```paths:
+  /gopher/create:
+    post:
+      summary: Add a new gopher
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                pk:
+                    type: string
+                sk:
+                    type: string
+                id:
+                    type: string
+                email:
+                    type: string
+                name:
+                    type: string
+                gopherStatus:
+                    type: string
+                user:
+                    type: string
+                createAt:
+                    type: string
+              example:   # Sample object
+                pk: USER#tigerwoods  
+                sk: USER#tigerwoods
+                email: tigerwoods@gmail.com
+                name: Tiger Woods
+                gopherStatus: At Large
+                user: tigerwoods
+                createAt: 1626275538869
+      responses:
+        '200':
+          description: OK
+```
+
+Update gopher
+```paths:
+  /gopher/update/{id}:
+    post:
+      summary: Update a gopher
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                pk:
+                    type: string
+                sk:
+                    type: string
+                id:
+                    type: string
+                email:
+                    type: string
+                name:
+                    type: string
+                gopherStatus:
+                    type: string
+                user:
+                    type: string
+                createAt:
+                    type: string
+              example:   # Sample object
+                pk: USER#tigerwoods  
+                sk: USER#tigerwoods
+                email: tigerwoods@gmail.com
+                name: Tiger Woods
+                gopherStatus: At Large
+                user: tigerwoods
+                createAt: 1626275538869
+      responses:
+        '200':
+          description: OK
+```
+
+Delete gopher
+```paths:
+  /gopher/delete/{id}:
+    post:
+      summary: Delete a gopher
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                id:
+                    type: string
+              example:   # Sample object
+                id: ulid
+      responses:
+        '200':
+          description: OK
+```
+
+Search gophers by type, name, status, or location
+```paths:
+  /gopher/search?gopherType=Professional:
+    post:
+      summary: Search gophers by type, name, status, or location
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                gopherType:
+                    type: string
+                name:
+                    type: string
+                gopherStatus:
+                    type: string
+                location:
+                    type: string
+              example:   # Sample object
+                gopherType: Professional
+                name: Tiger Woods
+                gopherStatus: Captive
+                location: USA
+      responses:
+        '200':
+          description: OK
+```
+
+----
+
+Gopher hole 
+----
+
+Create a gopher hole
+```paths:
+  /gopher-hole/create:
+    post:
+      summary: Add a new gopher hole
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                pk:
+                    type: string
+                sk:
+                    type: string
+                id:
+                    type: string
+                hole:
+                    type: number
+                createAt:
+                    type: string
+              example:   # Sample object
+                pk: USER#tigerwoods  
+                sk: Hole#ulid
+                id: ulid
+                hole: 6
+                createAt: 1626275538869
+      responses:
+        '200':
+          description: OK
+```
+
+Update gopher
+```paths:
+  /gopher/update/{id}:
+    post:
+      summary: Update a gopher
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                pk:
+                    type: string
+                sk:
+                    type: string
+                id:
+                    type: string
+                hole:
+                    type: number
+                createAt:
+                    type: string
+              example:   # Sample object
+                pk: USER#tigerwoods  
+                sk: Hole#ulid
+                id: ulid
+                hole: 6
+                createAt: 1626275538869
+      responses:
+        '200':
+          description: OK
+```
+
+Delete gopher hole
+```paths:
+  /gopher-hole/delete/{id}:
+    post:
+      summary: Delete a gopher
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                id:
+                    type: string
+              example:   # Sample object
+                id: ulid
+      responses:
+        '200':
+          description: OK
+```
