@@ -124,6 +124,36 @@ Update gopher
                 type: string
                 minimum: 1
                 description: gopher id
+        requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                pk:
+                    type: string
+                sk:
+                    type: string
+                id:
+                    type: string
+                email:
+                    type: string
+                name:
+                    type: string
+                gopherStatus:
+                    type: string
+                user:
+                    type: string
+                createAt:
+                    type: string
+              example:   # Sample object
+                pk: USER#tigerwoods  
+                sk: USER#tigerwoods
+                email: tigerwoods@gmail.com
+                name: Tiger Woods
+                gopherStatus: At Large
+                user: tigerwoods
+                createAt: 1626275538869
     responses:
     '200':
         description: OK
@@ -134,16 +164,14 @@ Delete gopher
   /gopher/delete/{id}:
     delete:
       summary: Delete a gopher
-      requestBody:
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                id:
-                    type: string
-              example:   # Sample object
-                id: ulid
+      parameters:
+        - in: path
+          name: id   # Note the name is the same as in the path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+          description: gopher ulid
     responses:
     '200':
         description: OK
