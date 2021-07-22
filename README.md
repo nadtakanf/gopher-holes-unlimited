@@ -21,6 +21,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+
 Welcome to Gopher Holes Unlimited! A new website that tracks two things: gophers and gopher holes.
 We pride ourselves in our ability to provide current, up-to-date statistics on all gophers and their
 associated holes in the United States.
