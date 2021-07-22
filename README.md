@@ -60,11 +60,11 @@ This project is built with technologiest as below.
 * [Lambda log](https://lambdalog.js.org/)
 
 ### Database Schema
-| PK               | SK                | id    | email                | name        | gopherStatus | user         | holes | location | gopher type | createdAt
-| ---------------- | ----------------- | ----- | -------------------- | ----------- | ------------ | ------------ | ----- | Professional | USA | ---------
-| USER#tigerwoods  | USER#tigerwoods   |       | tigerwoods@gmail.com | Tiger Woods | At Large     | tigerwoods   |       | 1626275538869
-| USER#tigerwoods  | Hole#ulid         | ulid  |                      |             |              |              |   6   | 1626275538869
-| USER#wacher1     | Wacher#tiberwoods |       | wacher1 @gmail.com   | wacher 1    |              | wacher1      |       | 1626275538869 
+PK               | SK                | id    | email                | name        | gopherStatus | user         | holes | location | gopher type | createdAt
+---------------- | ----------------- | ----- | -------------------- | ----------- | ------------ | ------------ | ----- | Professional | USA | ---------
+USER#tigerwoods  | USER#tigerwoods   |       | tigerwoods@gmail.com | Tiger Woods | At Large     | tigerwoods   |       | 1626275538869
+USER#tigerwoods  | Hole#ulid         | ulid  |                      |             |              |              |   6   | 1626275538869
+USER#wacher1     | Wacher#tiberwoods |       | wacher1 @gmail.com   | wacher 1    |              | wacher1      |       | 1626275538869 
 
 ### Open API Spec
 
