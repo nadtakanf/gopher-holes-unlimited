@@ -13,9 +13,9 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#business-requirements">Business Requirements</a></li>
         <li><a href="#architecture-Gopher-backend-api-diagram">Architecture Gopher Backend API diagram</a></li>
         <li><a href="#built-with">Built With</a></li>
-        <li><a href="#business-requirements">Business Requirements</a></li>
         <li><a href="#database-schema">Database Schema</a></li>
         <li><a href="#open-api-spec">Open API Spec</a></li>
       </ul>
@@ -29,9 +29,6 @@ Welcome to Gopher Holes Unlimited! A new website that tracks two things: gophers
 We pride ourselves in our ability to provide current, up-to-date statistics on all gophers and their
 associated holes in the United States.
 
-#### Architecture Gopher Backend API diagram
-<img src="/images/gopher-holes-unlimited-arch-diagram.png"/>
-
 ### Business Requirements
 * A user can add/update/delete gophers from the system
 * A user can add/update/delete gopher holes from the system
@@ -42,6 +39,9 @@ associated holes in the United States.
 * A user can search for gophers by type, name, status, or location
 * The system must publish a webhook event when a gopher hole is created or deleted
 * If a user delete a gopher, all associated gopher holes must also be deleted automatically
+
+#### Architecture Gopher Backend API diagram
+<img src="/images/gopher-holes-unlimited-arch-diagram.png"/>
 
 ### Built With
 This project is built with technologiest as below.
