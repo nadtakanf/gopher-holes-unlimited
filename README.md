@@ -13,7 +13,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#architecture-Gopher-backend-api-diagram">Architecture Gopher Backend API diagramh</a></li>
+        <li><a href="#architecture-Gopher-backend-api-diagram">Architecture Gopher Backend API diagram</a></li>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#business-requirements">Business Requirements</a></li>
         <li><a href="#database-schema">Database Schema</a></li>
