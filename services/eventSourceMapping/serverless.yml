@@ -1,0 +1,28 @@
+service: gopher-holes-event-source-mapping
+
+provider:
+  name: aws
+  profile: nadtakan
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+    
+custom:
+  dynamodbStackName: gopher-holes-unlimited-dynamodb
+
+function:
+  send-notification:
+    handler: src/handlers/send-notification.handler
+
+resources:
+  Resources:
+    SendPushStreamEventSource:
+      Type: AWS::Lambda::EventSourceMapping
+      Properties: 
+        BatchSize: 100
+        Enabled: true
+        StartingPosition: LATEST
+        EventSourceArn: 
+          Fn::ImportValue: ${self:custom.dynamodbStackName}:GopherHolesStreamArn
+        FunctionName: 
+           "Fn::GetAtt": [ SendNotificationLambdaFunction, Arn ]
+                      

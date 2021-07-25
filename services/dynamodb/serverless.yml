@@ -90,3 +90,12 @@ resources:
         Tags:
           - Key: Name
             Value: ${self:service}-${self:provider.region}
+
+    Outputs:
+      TableStreamArn:
+        Value: 
+          Fn::GetAtt:
+            - gopherHolesTable
+            - StreamArn
+        Export:
+            Name: ${self:service}-${self:provider.stage}:GopherHolesStreamArn
