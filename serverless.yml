@@ -1,0 +1,96 @@
+service: gopher-holes-unlimited
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+  logs:
+    restApi: true
+  lambdaHashingVersion: 20201221
+  environment:
+    REGION: ${self:provider.region}
+    FAILURE_SNS: 
+      Fn::ImportValue: ${self:custom.sns.gopherHolesSnsStack}:${self:provider.stage}:SNSTargetNotifyForFailedEvents
+    TABLE_NAME: ${self:custom.dynamodb.tableName}
+    EVENT_BRIDGE: "default"
+    COGNITO_ARN: ${self:custom.cognito.gopherHolesUserPoolId}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.dynamodb.tableName}
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.dynamodb.tableName}/index/*
+        - Effect: Allow
+          Action: 
+            - events:PutEvents
+            - events:listEventBuses
+          Resource: !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/*
+        - Effect: Allow
+          Action: 
+            - sns:Publish
+          Resource: 
+            - Fn::ImportValue: ${self:custom.sns.gopherHolesSnsStack}:${self:provider.stage}:SNSTargetNotifyForFailedEvents
+
+package:
+  patterns:
+    - '!resources/**'
+    - '!mocks/**'
+
+custom:
+  dynamodb:
+    tableName: gopher-holes-unlimited-${self:provider.stage}
+  cognito:
+    gopherHolesCognitoName: ${self:service}-cognito-userpool
+    gopherHolesCognitoClientId: ${file(./temp.yml):COGNITO_CLIENT_ID}
+    gopherHolesUserPoolId: ${file(./temp.yml):COGNITO_USER_POOL_ID}
+  sns:
+    gopherHolesSnsStack: gopher-holes-unlimited-sns-${self:provider.stage}   
+
+functions:
+  gopher-create:
+    handler: src/handlers/create.handler
+    events:
+      - http:
+          path: /gopher/create
+          method: POST
+          authorizer: 
+            arn: arn:aws:cognito-idp:us-west-1:844978381282:userpool/${self:custom.cognito.gopherHolesUserPoolId}
+
+  gopher-update:
+    handler: src/handlers/update.handler
+    events:
+      - http:
+          path: /gopher/update
+          method: PUT
+          authorizer: 
+            arn: arn:aws:cognito-idp:us-west-1:844978381282:userpool/${self:custom.cognito.gopherHolesUserPoolId}
+
+  gopher-delete:
+    handler: src/handlers/delete.handler
+    events:
+      - http:
+          path: /gopher/delete
+          method: POST
+          authorizer: 
+            arn: arn:aws:cognito-idp:us-west-1:844978381282:userpool/${self:custom.cognito.gopherHolesUserPoolId}
+  
+  gopher-search:
+    handler: src/handlers/search.handler
+    events:
+      - http:
+          path: /gopher/search
+          method: GET
+          authorizer: 
+            arn: arn:aws:cognito-idp:us-west-1:844978381282:userpool/${self:custom.cognito.gopherHolesUserPoolId}
+
+plugins:
+  - serverless-webpack

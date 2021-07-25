@@ -1,0 +1,92 @@
+service: gopher-holes-unlimited-dynamodb
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  profile: nadtakan
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+
+custom:
+  tableName: gopher-holes-unlimited-${self:provider.stage}
+
+resources:
+  Resources:
+    gopherHolesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: gopherType
+            AttributeType: S
+          - AttributeName: name
+            AttributeType: S
+          - AttributeName: gopherStatus
+            AttributeType: S
+          - AttributeName: location
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: 'gopherTypeGSI'
+            KeySchema:
+              - AttributeName: gopherType
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: 'nameGSI'
+            KeySchema:
+              - AttributeName: name
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: 'gopherTypeGSI'
+            KeySchema:
+              - AttributeName: gopherType
+                KeyType: "HASH"
+              - AttributeName: PK
+                KeyType: "RANGE"
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: 'gopherStatusGSI'
+            KeySchema:
+              - AttributeName: gopherStatus
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: 'locationGSI'
+            KeySchema:
+              - AttributeName: location
+                KeyType: "HASH"
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:provider.region}

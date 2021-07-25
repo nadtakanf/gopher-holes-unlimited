@@ -1,0 +1,18 @@
+{
+  "name": "cognito",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:dev": "sh script/deploy.bash nadtakan"
+  },
+  "author": "Nadtakan Futhoem",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.21.0",
+    "@aws-sdk/client-sns": "^3.21.0",
+    "lambda-log": "^3.0.0"
+  }
+}

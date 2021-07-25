@@ -1,0 +1,19 @@
+{
+  "name": "gopher-holes-unlimited",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <a href=\"https://github.com/nadtakanf/gopher-holes-unlimited\">     <img src=\"images/aws-community-builder.png\" alt=\"Logo\" width=\"80\" height=\"80\">   </a>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nadtakanf/gopher-holes-unlimited.git"
+  },
+  "author": "Nadtakan Futhoem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nadtakanf/gopher-holes-unlimited/issues"
+  },
+  "homepage": "https://github.com/nadtakanf/gopher-holes-unlimited#readme"
+}

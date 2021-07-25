@@ -1,0 +1,94 @@
+service: gopher-holes-cognito
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+  environment:
+    REGION: ${self:provider.region}
+    FAILURE_SNS: 
+      Fn::ImportValue: ${self:custom.sns.gopherHolesSnsStack}:${self:provider.stage}:SNSTargetNotifyForFailedEvents
+    TABLE_NAME: ${self:custom.dynamodb.tableName}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+          Resource: 
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.dynamodb.tableName}
+        - Effect: Allow
+          Action: 
+            - sns:Publish
+          Resource: 
+            - Fn::ImportValue: ${self:custom.sns.gopherHolesSnsStack}:${self:provider.stage}:SNSTargetNotifyForFailedEvents
+
+package:
+  patterns:
+    - '!script/**'    
+
+functions:
+  cognitoEventTriggers:
+    handler: handlers/cognitoTriggers.handler
+
+custom:
+  dynamodb:
+    tableName: gopher-holes-unlimited-${self:provider.stage}
+  sns:
+    gopherHolesSnsStack: gopher-holes-unlimited-sns-${self:provider.stage}   
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:service}-${self:provider.stage}-user-pool
+        AliasAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+
+    CognitoUserPoolClientWeb:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.stage}-user-pool-client-web
+        UserPoolId:
+          Ref: CognitoUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+    
+    UserPoolLambdaInvokePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:invokeFunction
+        Principal: cognito-idp.amazonaws.com
+        FunctionName: gopher-holes-cognito-${self:provider.stage}-cognitoEventTriggers
+        SourceArn: !Sub arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+      Export:
+          Name: ${self:service}:${self:provider.stage}:UserPoolId
+    
+    UserPoolArn:
+      Value: 
+        Fn::GetAtt:
+          - CognitoUserPool
+          - Arn
+      Export:
+        Name: ${self:service}:${self:provider.stage}:UserPoolArn
+
+    ClientId:
+      Value:
+        Ref: CognitoUserPoolClientWeb
+      Export:
+        Name: ${self:service}:${self:provider.stage}:CognitoUserPoolClientWeb

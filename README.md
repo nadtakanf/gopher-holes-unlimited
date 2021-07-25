@@ -40,7 +40,7 @@ associated holes in the United States.
 * The system must publish a webhook event when a gopher hole is created or deleted
 * If a user delete a gopher, all associated gopher holes must also be deleted automatically
 
-#### Architecture Gopher Backend API diagram
+### Architecture Gopher Backend API diagram
 <img src="/images/gopher-holes-unlimited-arch-diagram.png"/>
 
 ### Built With
@@ -65,6 +65,12 @@ PK  | #SK | #id | #email | #name | #gopherStatus | #user | #holes | #createdAt
 USER#tigerwoods  | USER#tigerwoods   |       | tigerwoods@gmail.com | Tiger Woods | At Large      | tigerwoods   |        | 1626275538869
 USER#tigerwoods  | Hole#ulid         | ulid  |                      |             |               |              |   6    | 1626275538869
 USER#wacher1     | Wacher#tiberwoods |       | wacher1 @gmail.com   | wacher 1    |               | wacher1      |        | 1626275538869 
+
+GSI-INDEXES
+- gopherType
+- name
+- gopherStatus
+- location
 
 ### Open API Spec
 
@@ -307,3 +313,11 @@ Delete gopher hole
     '200':
         description: OK
 ```
+
+<!-- ACKNOWLEDGEMENTS -->
+### Acknowledgements
+* [AWS WAF](https://aws.amazon.com/waf)
+* [Route 53](https://aws.amazon.com/route53/)
+* [CloudFront](https://aws.amazon.com/cloudfront/)
+* [Decoupling serverless workloads with Amazon EventBridge](https://www.youtube.com/watch?v=VI79XQW4dIM)
+* [Event Driven Applications with DynamoDB Streams and EventBridge](https://bryson3gps.wordpress.com/2020/08/31/event-driven-applications-with-dynamodb-streams-and-eventbridge/)

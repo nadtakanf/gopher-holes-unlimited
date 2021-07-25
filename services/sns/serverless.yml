@@ -1,0 +1,36 @@
+service: gopher-holes-unlimited-sns
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  profile: nadtakan
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+
+custom:
+  email:
+    prod: nadtakan.futhoem@gmail.com
+    qa: nadtakan.futhoem@gmail.com
+    dev: nadtakan.futhoem@gmail.com
+
+resources:
+  Resources:
+    GopherHolesSns:
+      Type: AWS::SNS::Topic
+      Properties: 
+        DisplayName: ${self:service}-${self:provider.stage}-${self:provider.region}
+        Subscription: 
+          - Endpoint: ${self:custom.email.${self:provider.stage}}
+            Protocol: email
+        Tags: 
+          - Key: Name
+            Value: ${self:service}-${self:provider.region}
+        TopicName: ${self:service}-${self:provider.stage}-${self:provider.region}-notification
+  
+  Outputs:
+    SnsArn: 
+      Description: "ARN of sns topic"
+      Export:
+        Name: ${self:service}:${self:provider.stage}:SNSTargetNotifyForFailedEvents
+      Value: 
+        Ref: GopherHolesSns
