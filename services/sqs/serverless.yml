@@ -1,0 +1,50 @@
+service: gopher-holes-unlimited-sqs
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  profile: nadtakan
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-west-1"}
+
+custom:
+  email:
+    prod: nadtakan.futhoem@gmail.com
+    qa: nadtakan.futhoem@gmail.com
+    dev: nadtakan.futhoem@gmail.com
+
+resources:
+  Resources:
+    GopherHolesSQS:
+      Type: AWS::SQS::Queue
+      Properties: 
+        RedrivePolicy: 
+          deadLetterTargetArn: 
+            Fn::GetAtt: 
+              - "GopherHolesDLQ"
+              - "Arn"
+          maxReceiveCount: 5
+    GopherHolesDLQ: 
+      Type: AWS::SQS::Queue
+  
+  Outputs:
+    SourceQueueURL: 
+      Description: "URL of source queue"
+      Value: 
+        Ref: "GopherHolesSQS"
+    SourceQueueARN: 
+      Description: "ARN of source queue"
+      Value: 
+        Fn::GetAtt: 
+          - "GopherHolesSQS"
+          - "Arn"
+    DeadLetterQueueURL: 
+      Description: "URL of dead-letter queue"
+      Value: 
+        Ref: "GopherHolesDLQ"
+    DeadLetterQueueARN: 
+      Description: "ARN of dead-letter queue"
+      Value: 
+        Fn::GetAtt: 
+          - "GopherHolesDLQ"
+          - "Arn"
