@@ -60,18 +60,6 @@ This project is built with technologiest as below.
 * [Lambda log](https://lambdalog.js.org/)
 
 ### Database Schema
-PK  | #SK | #id | #email | #name | #gopherStatus | #user | #holes | #createdAt 
---- | --- | --- | --- | --- | --- | --- | --- | --- |
-USER#tigerwoods  | USER#tigerwoods   |       | tigerwoods@gmail.com | Tiger Woods | At Large      | tigerwoods   |        | 1626275538869
-USER#tigerwoods  | Hole#ulid         | ulid  |                      |             |               |              |   6    | 1626275538869
-USER#wacher1     | Wacher#tiberwoods |       | wacher1 @gmail.com   | wacher 1    |               | wacher1      |        | 1626275538869 
-
-GSI-INDEXES
-- gopherType
-- name
-- gopherStatus
-- location
-
 [Access parterns](https://docs.google.com/spreadsheets/d/1a4FGKNZYEC0dNwmKUoASsintOyk9KiW3-IHwMaS012k/edit?usp=sharing)
 
 ### Open API Spec
@@ -83,7 +71,7 @@ Create gopher
 ```paths:
   /gopher/create:
     post:
-      summary: Add a new gopher
+      summary: Creating a new gopher
       requestBody:
         content:
           application/json:
@@ -96,23 +84,27 @@ Create gopher
                     type: string
                 id:
                     type: string
-                email:
-                    type: string
                 name:
                     type: string
                 gopherStatus:
                     type: string
-                user:
+                location:
+                    type: string
+                gopherType:
+                    type: string
+                userStatus:
                     type: string
                 createAt:
                     type: string
               example:   # Sample object
                 pk: USER#tigerwoods  
                 sk: USER#tigerwoods
-                email: tigerwoods@gmail.com
+                id: 12345
                 name: Tiger Woods
+                location: USA
+                gopherType: professional golfer
                 gopherStatus: At Large
-                user: tigerwoods
+                userStatus: player
                 createAt: 1626275538869
     responses:
     '200':
@@ -123,7 +115,7 @@ Update gopher
 ```paths:
   /gopher/update/{id}:
     put:
-        summary: Update a gopher
+        summary: Updating a gopher
         parameters:
             - in: path
                 name: id   # Note the name is the same as in the path
@@ -144,23 +136,27 @@ Update gopher
                     type: string
                 id:
                     type: string
-                email:
-                    type: string
                 name:
                     type: string
                 gopherStatus:
                     type: string
-                user:
+                location:
+                    type: string
+                gopherType:
+                    type: string
+                userStatus:
                     type: string
                 createAt:
                     type: string
               example:   # Sample object
                 pk: USER#tigerwoods  
                 sk: USER#tigerwoods
-                email: tigerwoods@gmail.com
+                id: 12345
                 name: Tiger Woods
+                location: USA
+                gopherType: professional golfer
                 gopherStatus: At Large
-                user: tigerwoods
+                userStatus: player
                 createAt: 1626275538869
     responses:
     '200':
@@ -171,7 +167,7 @@ Delete gopher
 ```paths:
   /gopher/delete/{id}:
     delete:
-      summary: Delete a gopher
+      summary: Deleting a gopher
       parameters:
         - in: path
           name: id   # Note the name is the same as in the path
@@ -251,8 +247,8 @@ Create a gopher hole
                 createAt:
                     type: string
               example:   # Sample object
-                pk: USER#tigerwoods  
-                sk: Hole#ulid
+                pk: PLAYER#tigerwoods  
+                sk: HOLDID#ulid
                 id: ulid
                 hole: 6
                 createAt: 1626275538869
@@ -289,8 +285,8 @@ Update gopher
                 createAt:
                     type: string
               example:   # Sample object
-                pk: USER#tigerwoods  
-                sk: Hole#ulid
+                pk: PLAYER#tigerwoods  
+                sk: HOLEID#ulid
                 hole: 6
                 createAt: 1626275538869
     responses:
