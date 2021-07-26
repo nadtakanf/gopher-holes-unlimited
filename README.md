@@ -63,9 +63,7 @@ This project is built with technologiest as below.
 [Access parterns](https://docs.google.com/spreadsheets/d/1a4FGKNZYEC0dNwmKUoASsintOyk9KiW3-IHwMaS012k/edit?usp=sharing)
 
 ### Open API Spec
-
-Gopher
-----
+#### Gopher
 
 Create gopher
 ```paths:
@@ -222,9 +220,7 @@ Search gophers by type, name, status, or location
 
 ----
 
-Gopher hole 
-----
-
+#### Gopher hole 
 Create a gopher hole
 ```paths:
   /gopher-hole/create:
