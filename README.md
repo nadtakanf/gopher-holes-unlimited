@@ -72,7 +72,7 @@ GSI-INDEXES
 - gopherStatus
 - location
 
-* [Access parterns](https://docs.google.com/spreadsheets/d/1a4FGKNZYEC0dNwmKUoASsintOyk9KiW3-IHwMaS012k/edit?usp=sharing)
+[Access parterns](https://docs.google.com/spreadsheets/d/1a4FGKNZYEC0dNwmKUoASsintOyk9KiW3-IHwMaS012k/edit?usp=sharing)
 
 ### Open API Spec
 
