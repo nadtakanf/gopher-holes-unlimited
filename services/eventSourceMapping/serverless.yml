@@ -7,14 +7,42 @@ provider:
   region: ${opt:region, "us-west-1"}
     
 custom:
-  dynamodbStackName: gopher-holes-unlimited-dynamodb
+  dynamodbStackName: gopher-holes-unlimited-dynamodb-${self:provider.stage}
 
-function:
+functions:
   send-notification:
+    role: LambdaRole
     handler: src/handlers/send-notification.handler
 
 resources:
   Resources:
+    LambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:custom.iam.lambda.name}
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-lambda-policy-logs
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: 
+                    - "dynamodb:GetRecords"
+                    - "dynamodb:GetShardIterator"
+                    - "dynamodb:DescribeStream"
+                    - "dynamodb:ListStreams"
+                  Resource: 
+                    Fn::ImportValue: ${self:custom.dynamodbStackName}:GopherHolesStreamArn
+
     SendPushStreamEventSource:
       Type: AWS::Lambda::EventSourceMapping
       Properties: 
@@ -24,5 +52,5 @@ resources:
         EventSourceArn: 
           Fn::ImportValue: ${self:custom.dynamodbStackName}:GopherHolesStreamArn
         FunctionName: 
-           "Fn::GetAtt": [ SendNotificationLambdaFunction, Arn ]
+          Fn::GetAtt: [SendDashnotificationLambdaFunction, Arn]
                       
