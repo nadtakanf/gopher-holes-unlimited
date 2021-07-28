@@ -10,6 +10,7 @@ provider:
   lambdaHashingVersion: 20201221
   environment:
     REGION: ${self:provider.region}
+    TABLE_NAME: ${self:custom.dynamodb.tableName}
     SOURCE_QUEUE_URL: 
       Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueURL
   iam:
@@ -17,18 +18,19 @@ provider:
       statements:
         - Effect: Allow
           Action: 
-            - sqs:SendMessage
+            - "sqs:SendMessage"
           Resource: 
             - Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueARN
 
 package:
   patterns:
     - '!resources/**'
-    - '!mocks/**'
 
 custom:
   sqs:
     gopherHolesSqsStack: gopher-holes-unlimited-sqs
+  dynamodb:
+    tableName: gopher-holes-unlimited-${self:provider.stage}
 
 functions:
   gopher-create-quque:
