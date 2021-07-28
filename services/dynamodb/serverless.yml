@@ -56,17 +56,6 @@ resources:
             ProvisionedThroughput: 
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
-          - IndexName: 'gopherTypeGSI'
-            KeySchema:
-              - AttributeName: gopherType
-                KeyType: "HASH"
-              - AttributeName: PK
-                KeyType: "RANGE"
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput: 
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
           - IndexName: 'gopherStatusGSI'
             KeySchema:
               - AttributeName: gopherStatus
@@ -91,11 +80,11 @@ resources:
           - Key: Name
             Value: ${self:service}-${self:provider.region}
 
-    Outputs:
-      TableStreamArn:
-        Value: 
-          Fn::GetAtt:
-            - gopherHolesTable
-            - StreamArn
-        Export:
-            Name: ${self:service}-${self:provider.stage}:GopherHolesStreamArn
+  Outputs:
+    TableStreamArn:
+      Value: 
+        Fn::GetAtt:
+          - gopherHolesTable
+          - StreamArn
+      Export:
+          Name: ${self:service}-${self:provider.stage}:GopherHolesStreamArn
