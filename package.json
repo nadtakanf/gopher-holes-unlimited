@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nadtakanf/gopher-holes-unlimited/issues"
   },
-  "homepage": "https://github.com/nadtakanf/gopher-holes-unlimited#readme"
+  "homepage": "https://github.com/nadtakanf/gopher-holes-unlimited#readme",
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.23.0"
+  }
 }

@@ -24,6 +24,8 @@ resources:
               - "GopherHolesDLQ"
               - "Arn"
           maxReceiveCount: 5
+        QueueName: gopherHolesQueue
+
     GopherHolesDLQ: 
       Type: AWS::SQS::Queue
   
@@ -32,19 +34,30 @@ resources:
       Description: "URL of source queue"
       Value: 
         Ref: "GopherHolesSQS"
+      Export:
+        Name: ${self:service}:${self:provider.stage}:SourceQueueURL
+
     SourceQueueARN: 
       Description: "ARN of source queue"
       Value: 
         Fn::GetAtt: 
           - "GopherHolesSQS"
           - "Arn"
+      Export:
+        Name: ${self:service}:${self:provider.stage}:SourceQueueARN
+
     DeadLetterQueueURL: 
       Description: "URL of dead-letter queue"
       Value: 
         Ref: "GopherHolesDLQ"
+      Export:
+        Name: ${self:service}:${self:provider.stage}:DeadLetterQueueURL
+
     DeadLetterQueueARN: 
       Description: "ARN of dead-letter queue"
       Value: 
         Fn::GetAtt: 
           - "GopherHolesDLQ"
           - "Arn"
+      Export:
+        Name: ${self:service}:${self:provider.stage}:DeadLetterQueueARN
