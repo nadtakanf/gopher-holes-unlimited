@@ -46,7 +46,7 @@ resources:
     SendPushStreamEventSource:
       Type: AWS::Lambda::EventSourceMapping
       Properties: 
-        BatchSize: 100
+        BatchSize: 1
         Enabled: true
         StartingPosition: LATEST
         EventSourceArn: 
