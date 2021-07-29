@@ -12,6 +12,5 @@ module.exports.handler = async (event) => {
     } catch (err) {
         await sns.notifyFailure(err);
     }
-        
     return event
 }

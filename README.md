@@ -48,6 +48,7 @@ This project is built with technologiest as below.
 * [Serverless Framework](https://www.serverless.com/)
 * [NodeJS](https://nodejs.org/en/)
 * [DynamoDB](https://aws.amazon.com/dynamodb/)
+* [Batch Scripting](https://www.tutorialspoint.com/batch_script/index.htm)
 * [DynamoDB Single Table Design](https://www.youtube.com/watch?v=Q6-qWdsa8a4)
 * [Cognito Presignup Triggers](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-sign-up.html)
 * [AWS SDK V3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/index.html)

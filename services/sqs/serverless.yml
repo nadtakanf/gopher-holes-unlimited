@@ -1,5 +1,4 @@
 service: gopher-holes-unlimited-sqs
-frameworkVersion: '2'
 
 provider:
   name: aws
