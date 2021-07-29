@@ -7,12 +7,6 @@ provider:
   stage: ${opt:stage, "dev"}
   region: ${opt:region, "us-west-1"}
 
-custom:
-  email:
-    prod: nadtakan.futhoem@gmail.com
-    qa: nadtakan.futhoem@gmail.com
-    dev: nadtakan.futhoem@gmail.com
-
 resources:
   Resources:
     GopherHolesSQS:
