@@ -13,14 +13,6 @@ provider:
     TABLE_NAME: ${self:custom.dynamodb.tableName}
     SOURCE_QUEUE_URL: 
       Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueURL
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action: 
-            - "sqs:SendMessage"
-          Resource: 
-            - Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueARN
 
 package:
   patterns:
@@ -33,8 +25,9 @@ custom:
     tableName: gopher-holes-unlimited-${self:provider.stage}
 
 functions:
-  gopher-create-quque:
+  gopher-create-queue:
     handler: src/handlers/create.queue
+    role: LambdaRole
     events:
       - http:
           path: /gopher/create
@@ -42,11 +35,48 @@ functions:
   
   gopher-create-process:
     handler: src/handlers/create.process
+    role: LambdaRole
     events:
       - sqs:
           arn: 
             Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueARN
           batchSize: 1
+
+resources:
+  Resources:
+    LambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${self:provider.stage}-${self:provider.region}-lambda-role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-dynamodb-role
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                  Resource: 
+                    - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.dynamodb.tableName}
+                    - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.dynamodb.tableName}/index/*
+          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-sqs-role
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: 
+                    - sqs:SendMessage
+                  Resource: 
+                    - Fn::ImportValue: ${self:custom.sqs.gopherHolesSqsStack}:${self:provider.stage}:SourceQueueARN
 
 plugins:
   - serverless-webpack

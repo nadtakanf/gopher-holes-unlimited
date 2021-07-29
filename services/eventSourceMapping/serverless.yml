@@ -30,7 +30,7 @@ resources:
             Action:
               - sts:AssumeRole
         Policies:
-          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-lambda-policy-logs
+          - PolicyName: ${self:service}-${self:provider.stage}-${self:provider.region}-dynamodb-role
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
